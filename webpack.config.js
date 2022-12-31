@@ -47,35 +47,3 @@ module.exports = {
   watch: true,
   devtool: 'source-map'
 }
-module.exports = {
-  mode: 'development',
-  entry: './src/js/utils.js',
-  output: {
-    path: __dirname + '/dist/',
-    filename: './js/utils.bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.m?js$/,
-        exclude: /(node_modules|bower_components)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
-        }
-      },
-      {
-        test: /\.(png|jpe?g|gif)$/i,
-        use: [
-          {
-            loader: 'file-loader'
-          }
-        ]
-      }
-    ]
-  },
-  watch: true,
-  devtool: 'source-map'
-}
