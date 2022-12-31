@@ -1,7 +1,8 @@
-import utils from './utils'
+import utils, {randomColor} from './utils'
+const { noise } = require('@chriscourses/perlin-noise')
 
 const canvas = document.querySelector('canvas');
-const c = canvas.getContext('2d');
+const ctx = canvas.getContext('2d');
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
@@ -27,20 +28,21 @@ addEventListener('resize', () => {
 });
 
 // Objects
-class Object {
-  constructor(x, y, radius, color) {
+class Circle {
+  constructor(x, y, radius, color, offset) {
     this.x = x;
     this.y = y;
     this.radius = radius;
     this.color = color;
+    this.offset = offset;
   }
 
   draw() {
-    c.beginPath();
-    c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-    c.fillStyle = this.color;
-    c.fill();
-    c.closePath();
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+    ctx.closePath();
   }
 
   update() {
@@ -48,25 +50,40 @@ class Object {
   }
 }
 
-// Implementation
-let objects
-function init() {
-  objects = [];
 
-  for (let i = 0; i < 400; i++) {
-    // objects.push()
+// Implementation
+let circles = [];
+function init() {
+  circles = [];
+
+  for (let i = 0; i < 75; i++) {
+    circles.push(
+        new Circle(
+            -30,
+            -30,
+            10,
+            `hsl(${Math.random() * 255}, 50%, 50%)`,
+            i * 0.01
+        )
+    );
   }
 }
+
+let time = 0;
 
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate);
-  c.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  c.fillText('HTML CANVAS BOILERPLATE', mouse.x, mouse.y);
-  // objects.forEach(object => {
-  //  object.update()
-  // })
+  circles.forEach((circle) => {
+    circle.draw();
+    circle.y = noise(time + circle.offset) * canvas.height;
+    circle.x = noise(time + circle.offset + 20) * canvas.width;
+  });
+
+  time += 0.005;
 }
 
 init();
